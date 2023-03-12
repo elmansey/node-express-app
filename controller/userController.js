@@ -3,7 +3,7 @@ var jwt = require("jsonwebtoken")
 
 
 // login 
-async function login(data){
+async function login(data,next){
     var {username,password} = data
 
     var user = await Users.findOne({username}).select("+password")

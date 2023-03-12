@@ -10,7 +10,7 @@ var validator = require('../middleware/validator');
 router.post('/login', validator.loginValidator, async (req, res, next) => {
     try{
         var data = req.body
-        var response = await Users.login(data)
+        var response = await Users.login(data,next)
         res.send(response)
     }catch(err){
         next(err)
