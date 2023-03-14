@@ -3,16 +3,17 @@ const Tasks = require("../models/tasksModel")
 
 
 
-async function add(data){
+async function add(req){
     var Task = new Tasks ({
-        title : data.title,
-        status : data.status
+        title : req.body.title,
+        status : req.body.status,
+        user: req.user._id
     })
    await Task.save()
    return Task
 }
-async function get(){
-    var tasks = await Tasks.find();
+async function get(req){
+    var tasks = await Tasks.find({user:req.user._id});
     return tasks
 }
 async function show(id){
@@ -30,3 +31,13 @@ async function remove(id){
 }
 
 module.exports = {add,get,show,update,remove}
+
+
+
+//ali
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MTA5Y2QxNDkwM2MwNGFhM2M5M2NjMiIsImlhdCI6MTY3ODgxMDMyNywiZXhwIjoxNjc4ODEzOTI3fQ.Pq2oa6yxa-xiGXQjlrtpSZxYbGuWEcj_fqYT-tPAqdg 
+
+
+
+//abdelrahman
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MTA5Y2M1NDkwM2MwNGFhM2M5M2NjMCIsImlhdCI6MTY3ODgxMDM1MywiZXhwIjoxNjc4ODEzOTUzfQ.QtSPsiTTFI_LHQTUtxn_0CIMMJ7Jm7ruporfKCMVB6E

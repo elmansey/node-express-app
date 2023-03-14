@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
+const _ = require('lodash'); 
 
 // schema
 const UsersSchema = new mongoose.Schema({
@@ -16,6 +17,15 @@ const UsersSchema = new mongoose.Schema({
         required: [true, 'the password is required !'],
         select:false
     },
+
+},
+{
+    toJSON:{
+		transform: (doc,ret)=>{
+			const data_re = _.pick(ret,['_id','username','email'])
+			return data_re;
+		}
+	}
 });
 
 

@@ -1,6 +1,10 @@
 const express = require('express');
+var cors = require('cors')
 const app = express()
 const port = 8000
+
+
+app.use(cors())
 
 // configre the .env file 
 const dotenv = require('dotenv');

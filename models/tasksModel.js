@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 // schema
 const tasksSchema = new mongoose.Schema({
@@ -10,6 +11,11 @@ const tasksSchema = new mongoose.Schema({
         type: String,
         required: [true, 'the status is required !']
     },
+    user:{
+        type:Schema.Types.ObjectId,
+        required:true,
+        ref:'Users'
+    }
 });
 
 

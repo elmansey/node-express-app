@@ -7,18 +7,17 @@ const RouteTokenValidator = require("../middleware/validateToken")
 // add task
 router.post('/', RouteTokenValidator, async (req, res, next) => {
     try{
-        var data = req.body
-        var task = await Tasks.add(data)
+        var task = await Tasks.add(req)
        res.send("added successfully")
     }catch(err){
         next(err)
     }
 })
   
-// all taske 
+// all taske for loged user 
 router.get('/', RouteTokenValidator , async (req, res, next) => {
     try{
-        var tasks = await Tasks.get()
+        var tasks = await Tasks.get(req)
         res.send(tasks)
     }catch(err){
         next(err)

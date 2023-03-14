@@ -1,65 +1,32 @@
 var jwt = require("jsonwebtoken")
 const Users = require("../models/userModel")
-
+const {promisify} = require('util');
+const verifyJwt = promisify(jwt.verify);
 
 async function validateToken(req, res, next) {
-    const auhorizationHeader = req.headers.authorization;
-    let result;
-  
-    if (!auhorizationHeader) {
-      return res.status(401).json({
-        error: true,
-        message: "Access token is missing",
-      });
-    }
-    
-    const token = req.headers.authorization.split(" ")[1];
-  
-  
-    try {
-      
-      let user = await Users.findOne({
-        id: token.id,
-      });
+    try{
+      //  extract token from headers
+      const token = req.headers.authorization ? req.headers.authorization.split(" ")[1] : "";
+      if(!token){
+        const error = new Error('unauthorized');
+        error.statusCode = 401;
+        return next(error)
+      }
 
-      
-      if (!user) {
-        result = {
-          error: true,
-          message: "Authorization error",
-        };
-  
-        return res.status(403).json(result);
+      const {id} = await verifyJwt(token,process.env.JWTSECRET);
+      // find user by id
+      const user = await Users.findById(id);
+      if(!user){
+        const error = new Error('unauthorized');
+        error.statusCode = 401;
+        return next(error)
       }
-      result = jwt.verify(token, process.env.JWTSECRET);
-        
-      if (!result) {
-        result = {
-          error: true,
-          message: "Invalid token",
-        };
-
-        return res.status(401).json(result);
-      }
-        // var user = await Users.findById(result.id)
-        // res.send({
-        //   token,
-        //   user
-        // })
-      next();
-    } catch (error) {
-      console.error(error);
-      if (error.name === "TokenExpiredError") {
-        return res.status(403).json({
-          error: true,
-          message: "Token expired",
-        });
-      }
-  
-      return res.status(403).json({
-        error: true,
-        message: "Authentication error",
-      });
+      //  attach user to request body
+      req.user = user;
+      next();	
+    }catch(err){
+      console.log(err)
+      next(err)
     }
   }
   
